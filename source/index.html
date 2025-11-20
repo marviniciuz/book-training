@@ -22,7 +22,7 @@
         </div>
         <div v-for="(ex, i) in exercicios" :key="i" class="card white z-depth-1">
             <div class="card-content">
-                <span class="card-title">Exercício {{ i+1 }}</span>
+                <span class="card-title" v-text="'Exercício ' + (i + 1)"></span>
                 <div class="input-field">
                     <input type="text" v-model="ex.nome">
                     <label>Nome do exercício</label>
@@ -58,7 +58,7 @@
     </div>
     <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="script.js"></script>
+    <script src="app.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 </body>
 </html>
