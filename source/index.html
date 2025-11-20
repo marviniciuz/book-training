@@ -1,66 +1,143 @@
-<!-- index.html -->
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Gerador de Treinos - PDF</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" />
+    
+    <!-- Tailwind CSS CDN para estilização base (obrigatório para as classes) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Link para o arquivo CSS customizado (styles.css) -->
+    <link rel="stylesheet" href="styles.css" />
 </head>
-<body class="grey lighten-4">
-    <div id="app" class="container">
-        <h4 class="center-align">Montagem de Treino</h4>
-        <div class="card white z-depth-2">
-            <div class="card-content">
-                <span class="card-title">Iniciar treino</span>
-                <div class="input-field">
-                    <input type="number" v-model.number="qtd" min="0">
-                    <label>Quantidade de exercícios</label>
-                </div>
-                <button class="btn blue" @click="criarExercicios">Criar exercícios</button>
+<body class="bg-gray-50 min-h-screen p-4 md:p-8 font-sans">
+    <div id="app" class="card-container">
+        <h4 class="text-3xl font-extrabold text-center text-gray-800 mb-8">
+            Montagem de Treino
+        </h4>
+
+        <!-- Iniciar Treino Card -->
+        <div class="bg-white shadow-xl rounded-xl p-6 mb-8 border-t-4 border-indigo-500">
+            <h5 class="text-xl font-semibold text-gray-700 mb-4">Iniciar Treino</h5>
+            <div class="relative mb-4 input-group">
+                <input
+                    type="number"
+                    v-model.number="qtd"
+                    min="1"
+                    placeholder=" "
+                    class="w-full p-3 border border-gray-300 rounded-lg focus:border-indigo-500 focus:ring-indigo-500"
+                >
+                <label for="qtd-exercicios">Quantidade de exercícios</label>
             </div>
+            <button
+                class="w-full md:w-auto px-6 py-3 bg-indigo-600 text-white font-bold rounded-lg shadow-md hover:bg-indigo-700 transition duration-300 transform hover:scale-[1.01]"
+                @click="criarExercicios"
+            >
+                Criar Exercícios
+            </button>
         </div>
-        <div v-for="(ex, i) in exercicios" :key="i" class="card white z-depth-1">
-            <div class="card-content">
-                <span class="card-title" v-text="'Exercício ' + (i + 1)"></span>
-                <div class="input-field">
-                    <input type="text" v-model="ex.nome">
-                    <label>Nome do exercício</label>
-                </div>
-                <button class="btn green" @click="adicionarSerie(i)">Adicionar Série</button>
-                <ul class="collection">
-                    <li v-for="(s, idx) in ex.series" :key="idx" class="collection-item">
-                        <div class="row">
-                            <div class="input-field col s4">
-                                <select class="browser-default" v-model="s.tipo">
-                                    <option value="Aquecimento">Aquecimento</option>
-                                    <option value="Preparatória">Preparatória</option>
-                                    <option value="Falha">Falha</option>
-                                    <option value="Back Off">Back Off</option>
-                                </select>
-                            </div>
-                            <div class="input-field col s4">
-                                <input type="text" v-model="s.reps">
-                                <label>Repetições / Carga</label>
-                            </div>
-                            <div class="input-field col s4">
-                                <input type="text" v-model="s.obs">
-                                <label>Observações</label>
-                            </div>
-                        </div>
-                    </li>
-                </ul>
+
+        <!-- Exercícios List -->
+        <div v-for="(ex, i) in exercicios" :key="i" class="bg-white shadow-lg rounded-xl p-6 mb-6">
+            <div class="flex justify-between items-center mb-4">
+                <h5 class="text-2xl font-bold text-indigo-700">
+                    Exercício {{ i + 1 }}
+                </h5>
+                <button @click="removerExercicio(i)" class="text-red-500 hover:text-red-700 transition">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                    </svg>
+                </button>
             </div>
+
+            <!-- Nome do Exercício -->
+            <div class="relative mb-6 input-group">
+                <input
+                    type="text"
+                    v-model="ex.nome"
+                    placeholder=" "
+                    class="w-full p-3 border border-gray-300 rounded-lg focus:border-indigo-500"
+                >
+                <label>Nome do Exercício</label>
+            </div>
+
+            <!-- Séries do Exercício -->
+            <h6 class="text-lg font-semibold text-gray-600 mb-3 border-b pb-2">Séries</h6>
+            
+            <div
+                v-for="(s, idx) in ex.series"
+                :key="idx"
+                class="bg-gray-100 p-4 rounded-lg mb-3 shadow-inner border-l-4 border-green-500"
+            >
+                <div class="flex justify-between items-center mb-2">
+                     <p class="font-medium text-gray-700">Série {{ idx + 1 }}</p>
+                    <button @click="removerSerie(i, idx)" class="text-red-400 hover:text-red-600 transition">
+                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+               
+                <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                    <!-- Tipo -->
+                    <div class="relative input-group">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Tipo</label>
+                        <select
+                            v-model="s.tipo"
+                            class="w-full p-2 border border-gray-300 rounded-lg bg-white appearance-none focus:border-indigo-500"
+                        >
+                            <option value="Aquecimento">Aquecimento</option>
+                            <option value="Preparatória">Preparatória</option>
+                            <option value="Falha">Falha</option>
+                            <option value="Back Off">Back Off</option>
+                            <option value="Trabalho">Trabalho</option>
+                        </select>
+                    </div>
+
+                    <!-- Carga -->
+                    <div class="relative input-group">
+                        <input type="text" v-model="s.carga" placeholder=" " class="w-full p-2 border border-gray-300 rounded-lg focus:border-indigo-500">
+                        <label>Carga (kg)</label>
+                    </div>
+                    
+                    <!-- Repetições -->
+                    <div class="relative input-group">
+                        <input type="text" v-model="s.reps" placeholder=" " class="w-full p-2 border border-gray-300 rounded-lg focus:border-indigo-500">
+                        <label>Repetições/Tempo</label>
+                    </div>
+
+                    <!-- Observações -->
+                    <div class="relative input-group">
+                        <input type="text" v-model="s.obs" placeholder=" " class="w-full p-2 border border-gray-300 rounded-lg focus:border-indigo-500">
+                        <label>Observações</label>
+                    </div>
+                </div>
+            </div>
+
+            <button
+                class="mt-4 px-4 py-2 bg-green-500 text-white font-medium rounded-lg shadow hover:bg-green-600 transition duration-300"
+                @click="adicionarSerie(i)"
+            >
+                Adicionar Série
+            </button>
         </div>
-        <div class="center-align">
-            <button class="btn-large red" @click="gerarPDF">Gerar PDF</button>
+
+        <!-- Gerar PDF Button -->
+        <div class="text-center mt-10" v-if="exercicios.length > 0">
+            <button
+                class="px-10 py-4 bg-red-600 text-white text-xl font-bold rounded-xl shadow-lg hover:bg-red-700 transition duration-300 transform hover:scale-[1.03] active:scale-95"
+                @click="gerarPDF"
+            >
+                📄 Gerar PDF do Treino
+            </button>
         </div>
     </div>
+
+    <!-- Scripts (CDNs e seu JS customizado) -->
     <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <!-- Link para o arquivo JavaScript customizado (app.js) -->
     <script src="app.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 </body>
 </html>
-
-

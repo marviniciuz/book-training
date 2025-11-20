@@ -1,0 +1,46 @@
+/* Estilos Customizados para o efeito de foco do label no Tailwind */
+.input-group label {
+    transition: all 0.2s ease-out;
+    transform: translateY(0); /* Posição inicial (placeholder) */
+    font-size: 1rem;
+    color: #6b7280;
+    position: absolute;
+    left: 1rem;
+    top: 0.75rem; /* Ajuste para o padding p-3 do input */
+    pointer-events: none;
+    user-select: none;
+    padding: 0 0.25rem;
+    background-color: transparent;
+}
+
+/* Oculta o label quando o placeholder está visível (comportamento padrão) */
+.input-group input:placeholder-shown + label {
+    transform: translateY(0);
+    font-size: 1rem;
+}
+
+/* Move o label para cima (floating effect) quando o input está focado ou preenchido */
+.input-group input:focus + label,
+.input-group input:not(:placeholder-shown) + label {
+    transform: translateY(-120%); /* Move o label para cima do input */
+    font-size: 0.8rem;
+    color: #1e40af; /* Cor de foco azul */
+    top: 0; /* Ajusta a posição vertical para estar acima */
+    background-color: white;
+}
+
+/* Ajuste para o select, que não usa placeholder */
+.input-group select + label {
+    transform: translateY(-120%);
+    font-size: 0.8rem;
+    color: #6b7280;
+    top: 0;
+    left: 0.5rem;
+    background-color: white;
+}
+
+/* Estilo para melhor legibilidade em diferentes tamanhos de tela */
+.card-container {
+    max-width: 900px;
+    margin: 0 auto;
+}
